@@ -60,8 +60,6 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.5.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0-alpha02")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     testImplementation("junit:junit:4.13.2")
@@ -71,4 +69,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.5.0")
 }

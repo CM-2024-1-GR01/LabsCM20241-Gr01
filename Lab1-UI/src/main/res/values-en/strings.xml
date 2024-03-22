@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Labs20232-Gr04</string>
+    <string name="app_name">Personal Data</string>
     <string name="personIcon">User icon</string>
     <string name="contact_data_title">Contact Data</string>
     <string name="personal_data_title">Personal Data</string>

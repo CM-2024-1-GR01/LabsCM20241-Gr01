@@ -53,7 +53,7 @@ interface CountryApi {
 }
 
 object CountryApiService {
-    private const val BASE_URL = "https://apimocha.com/compumovil-lab-1.3/"
+    private const val BASE_URL = "https://apimocha.com/countriesandcities/"
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
@@ -83,6 +83,10 @@ fun LocationDropdownPortrait(
         withContext(Dispatchers.IO) {
             try {
                 countries = CountryApiService.countryApi.getAllCountries()
+                Log.d("inicio", "foreach")
+                countries.forEach{
+                    country -> Log.d("pais",country.country)
+                }
             } catch (e: Exception) {
                 Log.e("API Error", e.message ?: "Unknown error")
             }
@@ -146,6 +150,10 @@ fun LocationDropdownLandscape(
         withContext(Dispatchers.IO) {
             try {
                 countries = CountryApiService.countryApi.getAllCountries()
+                Log.d("inicio", "foreach")
+                countries.forEach{
+                        country -> Log.d("pais",country.country)
+                }
             } catch (e: Exception) {
                 Log.e("API Error", e.message ?: "Unknown error")
             }
@@ -188,10 +196,8 @@ private fun CityDropdown(
     cities: List<String>,
     onChangeCity: (String) -> Unit
 ) {
-    val selectedCity by remember { mutableStateOf<String?>(null) }
-    val isCityExpanded by remember { mutableStateOf(false) }
-    var isCityExpanded1 = isCityExpanded
-    var selectedCity1 = selectedCity
+    var selectedCity by remember { mutableStateOf<String?>(null) }
+    var isCityExpanded by remember { mutableStateOf(false) }
     Icon(
         painter = painterResource(id = R.drawable.city),
         contentDescription = null,
@@ -202,17 +208,17 @@ private fun CityDropdown(
     )
     Spacer(modifier = Modifier.width(15.dp))
     ExposedDropdownMenuBox(
-        expanded = isCityExpanded1,
+        expanded = isCityExpanded,
         onExpandedChange = { newValue ->
-            isCityExpanded1 = newValue
+            isCityExpanded = newValue
         }
     ) {
         TextField(
-            value = selectedCity1 ?: "",
+            value = selectedCity ?: "",
             onValueChange = {},
             readOnly = true,
             trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isCityExpanded1)
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isCityExpanded)
             },
             placeholder = {
                 Text(text = labelCity)
@@ -227,9 +233,9 @@ private fun CityDropdown(
             modifier = Modifier.menuAnchor()
         )
         ExposedDropdownMenu(
-            expanded = isCityExpanded1,
+            expanded = isCityExpanded,
             onDismissRequest = {
-                isCityExpanded1 = false
+                isCityExpanded = false
             }
         ) {
             cities.forEach { city ->
@@ -238,8 +244,8 @@ private fun CityDropdown(
                         Text(city)
                     },
                     onClick = {
-                        selectedCity1 = city
-                        isCityExpanded1 = false
+                        selectedCity = city
+                        isCityExpanded = false
                         onChangeCity(city)
                     }
                 )
