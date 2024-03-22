@@ -1,11 +1,7 @@
 package com.cm_20241_gr01.lab1_gui.screens
 
-import android.app.DatePickerDialog
 import android.content.res.Configuration
-import android.icu.util.Calendar
 import android.util.Log
-import android.widget.DatePicker
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -15,26 +11,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -44,16 +30,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -62,14 +41,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cm_20241_gr01.lab1_gui.DataViewModel
 import com.cm_20241_gr01.lab1_gui.R
-import java.util.Date
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.cm_20241_gr01.lab1_gui.ui.composables.inputText
-import com.cm_20241_gr01.lab1_gui.ui.composables.radioGender
-import com.cm_20241_gr01.lab1_gui.ui.composables.selectBirthday
-import com.cm_20241_gr01.lab1_gui.ui.composables.selectStudy
+import com.cm_20241_gr01.lab1_gui.ui.composables.InputField
+import com.cm_20241_gr01.lab1_gui.ui.composables.RadioButtonGender
+import com.cm_20241_gr01.lab1_gui.ui.composables.SelectDateBirthday
+import com.cm_20241_gr01.lab1_gui.ui.composables.SelectStudyGrade
 
 
 @Composable
@@ -105,8 +83,8 @@ fun PersonalDataLandscapeLayout(
         onDispose { }
     }
     BoxWithConstraints {
-        val colorBackground = Color(0xFF53041D)
-        val colorTittle = Color(0xff164583)
+        val colorBackground = Color(0xFFFFFFFF)
+        val colorTittle = Color(0xFF000000)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -129,7 +107,7 @@ fun PersonalDataLandscapeLayout(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                inputText(
+                InputField(
                     stringResource(id = R.string.firstname) + "*",
                     R.drawable.name,
                     KeyboardType.Text,
@@ -138,7 +116,7 @@ fun PersonalDataLandscapeLayout(
                     onValueChange = {DataViewModel.setFirstName(it) }
                 )
                 Spacer(modifier = Modifier.width(10.dp))
-                inputText(
+                InputField(
                     stringResource(id = R.string.lastname) + "*",
                     R.drawable.name,
                     KeyboardType.Text,
@@ -155,7 +133,7 @@ fun PersonalDataLandscapeLayout(
                 horizontalArrangement = Arrangement.Center,
 
                 ) {
-                radioGender()
+                RadioButtonGender()
             }
             Row(
                 modifier = Modifier
@@ -164,17 +142,18 @@ fun PersonalDataLandscapeLayout(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                selectBirthday()
+                SelectDateBirthday()
             }
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 60.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             )
             {
-                selectStudy()
+                SelectStudyGrade()
             }
 
             Row(
@@ -198,9 +177,9 @@ fun PersonalDataLandscapeLayout(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End
             ) {
-                val colorBack = Color(0xffa1cafe)
-                val colorText = Color(0xff043f8a)
-                Button(
+                val colorBack = Color(0xFF000000)
+                val colorText = Color(0xFF000000)
+                OutlinedButton(
                     enabled = validation,
                     onClick = {
                         onNextButton(2)
@@ -286,7 +265,7 @@ fun personalDataPortraitLayout(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                inputText(
+                InputField(
                     stringResource(id = R.string.firstname) + "*",
                     R.drawable.name,
                     KeyboardType.Text,
@@ -301,7 +280,7 @@ fun personalDataPortraitLayout(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                inputText(
+                InputField(
                     stringResource(id = R.string.lastname) + "*",
                     R.drawable.name,
                     KeyboardType.Text,
@@ -317,7 +296,7 @@ fun personalDataPortraitLayout(
                     .padding(bottom = 20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                radioGender()
+                RadioButtonGender()
             }
             Row(
                 modifier = Modifier
@@ -325,7 +304,7 @@ fun personalDataPortraitLayout(
                     .padding(bottom = 20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                selectBirthday()
+                SelectDateBirthday()
             }
 
             Row(
@@ -335,7 +314,7 @@ fun personalDataPortraitLayout(
                 verticalAlignment = Alignment.CenterVertically
             )
             {
-                selectStudy()
+                SelectStudyGrade()
             }
             Row(
                 modifier = Modifier
@@ -414,11 +393,15 @@ fun personalDataPortraitLayout(
 
 
 
-@Preview
+@Preview(
+    showSystemUi = true,
+    device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
+)
 @Composable
 fun PersonalDataScreenPreview(){
     val navController: NavHostController = rememberNavController()
-    personalDataPortraitLayout(onNextButton = {
+    PersonalDataLandscapeLayout(onNextButton = {
         navController.navigate("contactData")
     })
 }
+

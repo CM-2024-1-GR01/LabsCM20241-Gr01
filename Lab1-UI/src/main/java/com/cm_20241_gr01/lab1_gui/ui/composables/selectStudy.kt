@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.cm_20241_gr01.lab1_gui.R
 
 @Composable
-fun selectStudy() {
+fun SelectStudyGrade() {
     val colorIcon = Color(0xFF000000)
     Icon(
         painter = painterResource(id = R.drawable.study),

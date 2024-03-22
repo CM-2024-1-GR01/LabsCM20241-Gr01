@@ -3,7 +3,6 @@ package com.cm_20241_gr01.lab1_gui.ui.composables
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.widget.DatePicker
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -21,7 +20,7 @@ import com.cm_20241_gr01.lab1_gui.R
 import java.util.Date
 
 @Composable
-fun selectDatePicker(DataViewModel: DataViewModel = viewModel()) {
+fun SelectDate(DataViewModel: DataViewModel = viewModel()) {
     val infoUiState by DataViewModel.uiState.collectAsState()
 
     val colorIcon = Color(0xFFF7D4E8)

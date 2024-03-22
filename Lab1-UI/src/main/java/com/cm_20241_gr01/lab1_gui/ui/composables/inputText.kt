@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun inputText(
+fun InputField(
     input: String,
     @DrawableRes icon: Int,
     keyboard: KeyboardType,

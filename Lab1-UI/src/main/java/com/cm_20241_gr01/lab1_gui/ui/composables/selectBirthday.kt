@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.cm_20241_gr01.lab1_gui.R
 
 @Composable
-fun selectBirthday() {
+fun SelectDateBirthday() {
     val colorIcon = Color(0xFF000000)
     Icon(
         painter = painterResource(id = R.drawable.calendar),
@@ -26,5 +26,5 @@ fun selectBirthday() {
     Spacer(modifier = Modifier.width(20.dp))
     Text(text = stringResource(id = R.string.birthdate) + "*")
     Spacer(modifier = Modifier.width(16.dp))
-    selectDatePicker();
+    SelectDate();
 }

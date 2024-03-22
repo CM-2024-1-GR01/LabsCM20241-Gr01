@@ -20,7 +20,7 @@ import com.cm_20241_gr01.lab1_gui.DataViewModel
 import com.cm_20241_gr01.lab1_gui.R
 
 @Composable
-fun radioGender(DataViewModel: DataViewModel = viewModel()) {
+fun RadioButtonGender(DataViewModel: DataViewModel = viewModel()) {
     val infoUiState by DataViewModel.uiState.collectAsState()
 
     val colorIcon = Color(0xFF000000)
