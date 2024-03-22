@@ -75,10 +75,8 @@ fun LocationDropdownLandscape(
     var cities by remember { mutableStateOf<List<String>>(emptyList()) }
     var isCountryExpanded by remember { mutableStateOf(false) }
     var isCityExpanded by remember { mutableStateOf(false) }
-    val colorText = Color(0xff043f8a)
-    val colorBack = Color(0xffa1cafe)
-    val colorLabel = Color(0xff002a61)
-    val colorIcon = Color(0xFF000000)
+    val colorPrimary = Color(0xFF000000)
+    val colorSecundary = Color(0xFFF7D4E8)
     val labelCountry: String
     val labelCity: String
     if (countryValue.isEmpty()) {
@@ -114,7 +112,7 @@ fun LocationDropdownLandscape(
                 painter = painterResource(id = R.drawable.country),
                 contentDescription = null,
                 modifier = Modifier.size(48.dp),
-                tint = colorIcon
+                tint = colorPrimary
             )
             Spacer(modifier = Modifier.width(5.dp))
             ExposedDropdownMenuBox(
@@ -134,11 +132,11 @@ fun LocationDropdownLandscape(
                         Text(text = labelCountry)
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        textColor = colorText,
+                        textColor = colorPrimary,
                         focusedIndicatorColor = Color.Transparent,
-                        cursorColor = colorText,
-                        containerColor = colorBack,
-                        focusedLabelColor = colorLabel,
+                        cursorColor = colorPrimary,
+                        containerColor = colorSecundary,
+                        focusedLabelColor = colorPrimary,
                     ),
                     modifier = Modifier.menuAnchor()
                 )
@@ -168,7 +166,7 @@ fun LocationDropdownLandscape(
                 painter = painterResource(id = R.drawable.city),
                 contentDescription = null,
                 modifier = Modifier.size(48.dp),
-                tint = colorIcon
+                tint = colorPrimary
             )
             Spacer(modifier = Modifier.width(5.dp))
             ExposedDropdownMenuBox(
@@ -188,11 +186,11 @@ fun LocationDropdownLandscape(
                         Text(text = labelCity)
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        textColor = colorText,
+                        textColor = colorPrimary,
                         focusedIndicatorColor = Color.Transparent,
-                        cursorColor = colorText,
-                        containerColor = colorBack,
-                        focusedLabelColor = colorLabel,
+                        cursorColor = colorPrimary,
+                        containerColor = colorSecundary,
+                        focusedLabelColor = colorPrimary,
                     ),
                     modifier = Modifier.menuAnchor()
                 )
@@ -234,10 +232,8 @@ fun LocationDropdownPortrait(
     var cities by rememberSaveable { mutableStateOf<List<String>>(emptyList()) }
     var isCountryExpanded by rememberSaveable { mutableStateOf(false) }
     var isCityExpanded by rememberSaveable { mutableStateOf(false) }
-    val colorText = Color(0xff043f8a)
-    val colorBack = Color(0xffa1cafe)
-    val colorLabel = Color(0xff002a61)
-    val colorIcon = Color(0xFF000000)
+    val colorPrimary = Color(0xFF000000)
+    val colorSecundary = Color(0xFFF7D4E8)
     val labelCountry: String
     val labelCity: String
     if (countryValue.isEmpty()) {
@@ -273,7 +269,7 @@ fun LocationDropdownPortrait(
                 painter = painterResource(id = R.drawable.country),
                 contentDescription = null,
                 modifier = Modifier.size(48.dp),
-                tint = colorIcon
+                tint = colorPrimary
             )
             Spacer(modifier = Modifier.width(20.dp))
 
@@ -286,11 +282,11 @@ fun LocationDropdownPortrait(
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isCountryExpanded) },
                     placeholder = { Text(text = labelCountry) },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        textColor = colorText,
+                        textColor = colorPrimary,
                         focusedIndicatorColor = Color.Transparent,
-                        cursorColor = colorText,
-                        containerColor = colorBack,
-                        focusedLabelColor = colorLabel,
+                        cursorColor = colorPrimary,
+                        containerColor = colorSecundary,
+                        focusedLabelColor = colorPrimary,
                     ),
                     modifier = Modifier.menuAnchor()
                 )
@@ -326,7 +322,7 @@ fun LocationDropdownPortrait(
                 painter = painterResource(id = R.drawable.city),
                 contentDescription = null,
                 modifier = Modifier.size(48.dp),
-                tint = colorIcon
+                tint = colorPrimary
             )
             Spacer(modifier = Modifier.width(20.dp))
             ExposedDropdownMenuBox(
@@ -346,11 +342,11 @@ fun LocationDropdownPortrait(
                         Text(text = labelCity)
                     },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        textColor = colorText,
+                        textColor = colorPrimary,
                         focusedIndicatorColor = Color.Transparent,
-                        cursorColor = colorText,
-                        containerColor = colorBack,
-                        focusedLabelColor = colorLabel,
+                        cursorColor = colorPrimary,
+                        containerColor = colorSecundary,
+                        focusedLabelColor = colorPrimary,
                     ),
                     modifier = Modifier.menuAnchor()
                 )
