@@ -15,14 +15,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cm_20241_gr01.lab1_gui.DataViewModel
 import com.cm_20241_gr01.lab1_gui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun schoolDropdownMenu(DataViewModel: DataViewModel = viewModel()) {
-    val infoUiState by DataViewModel.uiState.collectAsState()
+fun SchoolDropdownMenu(dataViewModel: DataViewModel = viewModel()) {
+    val dataState by dataViewModel.uiState.collectAsState()
 
     var isExpanded by remember {
         mutableStateOf(false)
@@ -35,17 +36,14 @@ fun schoolDropdownMenu(DataViewModel: DataViewModel = viewModel()) {
         expanded = isExpanded,
         onExpandedChange = { newValue ->
             isExpanded = newValue
-        }
+        },
     )
     {
         val colorText = Color(0xFF000000)
         val colorBack = Color(0xFFF7D4E8)
         val colorLabel = Color(0xFF000000)
-        val label: String
-        if (infoUiState.scholarship.isNullOrEmpty()) {
-            label = stringResource(id = R.string.scolarity)
-        } else {
-            label = infoUiState.scholarship
+        val label: String = dataState.scholarship.ifEmpty {
+            stringResource(id = R.string.scolarity)
         }
         TextField(
             value = grade,
@@ -70,7 +68,8 @@ fun schoolDropdownMenu(DataViewModel: DataViewModel = viewModel()) {
             expanded = isExpanded,
             onDismissRequest = {
                 isExpanded = false
-            }
+            },
+            modifier = Modifier.menuAnchor()
         ) {
             val items = listOf(
                 stringResource(id = R.string.scolarity_primary),
@@ -83,7 +82,7 @@ fun schoolDropdownMenu(DataViewModel: DataViewModel = viewModel()) {
                     onClick = {
                         grade = item
                         isExpanded = false
-                        DataViewModel.setScholarship(item)
+                        dataViewModel.setScholarship(item)
                     },
                     text = {
                         Text(text = item)
@@ -92,4 +91,10 @@ fun schoolDropdownMenu(DataViewModel: DataViewModel = viewModel()) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun SchoolDropdownMenuPreview() {
+    SchoolDropdownMenu(viewModel())
 }

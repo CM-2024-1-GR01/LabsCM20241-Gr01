@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -57,20 +58,19 @@ fun ContactDataScreen(viewModel: DataViewModel) {
             dataState.phone.isNotEmpty() and dataState.email.isNotEmpty() and dataState.country.isNotEmpty()
         onDispose { }
     }
-    val colorTittle = Color(0xFF000000)
     when (LocalConfiguration.current.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
-            ContactDataLandscape(viewModel, colorTittle)
+            ContactDataLandscape(viewModel)
         }
 
         else -> {
-            ContactDataPortrait(viewModel, colorTittle)
+            ContactDataPortrait(viewModel)
         }
     }
 }
 
 @Composable
-fun ContactDataLandscape(dataViewModel: DataViewModel, colorTittle: Color) {
+fun ContactDataLandscape(dataViewModel: DataViewModel) {
     val dataState by dataViewModel.uiState.collectAsState()
     val screenTitle = stringResource(id = R.string.contact_data_title)
     val phone = stringResource(id = R.string.phone)
@@ -81,133 +81,44 @@ fun ContactDataLandscape(dataViewModel: DataViewModel, colorTittle: Color) {
     val validation by remember {
         mutableStateOf(false)
     }
-    val colorBackground = Color(0xFFFFFFFF)
-    val scrollState = rememberScrollState()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorBackground)
-            .verticalScroll(scrollState)
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Text(
-            text = screenTitle,
-            fontSize = 28.sp,
-            color = colorTittle,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-        Row(
+        val colorBackground = Color(0xFFFFFFFF)
+        val colorTittle = Color(0xFF000000)
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            InputField(
-                "$phone *",
-                R.drawable.phone,
-                KeyboardType.Number,
-                KeyboardCapitalization.None,
-                dataState.phone,
-                onValueChange = { dataViewModel.setPhone(it) }
-            )
-            Spacer(modifier = Modifier.width(15.dp))
-            InputField(
-                "$email *",
-                R.drawable.email,
-                KeyboardType.Email,
-                KeyboardCapitalization.None,
-                dataState.email,
-                onValueChange = { dataViewModel.setEmail(it) }
-            )
-        }
-        LocationDropdownLandscape(
-            dataState.country,
-            dataState.city,
-            onChangeCountry = { dataViewModel.setCountry(it) },
-            onChangeCity = { dataViewModel.setCity(it) },
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            InputField(
-                address,
-                R.drawable.address,
-                KeyboardType.Text,
-                KeyboardCapitalization.Sentences,
-                dataState.address,
-                onValueChange = { dataViewModel.setAddress(it) }
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+                .fillMaxSize()
+                .background(colorBackground)
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = stringResource(id = R.string.required_fields),
-                fontSize = 11.sp,
+                text = screenTitle,
+                fontSize = 28.sp,
                 color = colorTittle,
-                modifier = Modifier
-                    .padding(top = 15.dp),
+                modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End
-        )
-        {
-            val colorBack = Color(0xFF000000)
-            val colorText = Color(0xFF000000)
-            Button(
-                enabled = validation,
-                onClick = {
-                    Log.i(
-                        "", "${screenTitle.uppercase()}\n" +
-                                "---------------------------------------\n" +
-                                "$phone = ${dataState.phone}\n" +
-                                "$email = ${dataState.email}\n" +
-                                "$country = ${dataState.country}\n" +
-                                if (dataState.city.isNotEmpty()) {
-                                    "$city = ${dataState.city}\n"
-                                } else {
-                                    ""
-                                } +
-                                if (dataState.address.isNotEmpty()) {
-                                    "$address = ${dataState.address}\n"
-                                } else {
-                                    ""
-                                }
-                    )
-                },
-                modifier = Modifier.padding(end = 50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = colorBack)
-            ) {
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(
-                    stringResource(id = R.string.save_button),
-                    color = colorText,
-                )
-                Icon(
-                    Icons.Filled.ArrowForward,
-                    contentDescription = "ArrowForward",
-                    tint = colorText
-                )
-            }
+            PhoneAndEmailRow(phone, dataState, dataViewModel, email)
+
+            LocationDropdownLandscape(
+                dataState.country,
+                dataState.city,
+                onChangeCountry = { dataViewModel.setCountry(it) },
+                onChangeCity = { dataViewModel.setCity(it) },
+            )
+            AddressRow(address, dataState, dataViewModel)
+
+            RequiredMarkRow(colorTittle)
+
+            SaveButtonRow(validation, screenTitle, phone, dataState, email, country, city, address)
         }
     }
 }
 
-
 @Composable
-fun ContactDataPortrait(infoViewModel: DataViewModel = viewModel(), colorTittle: Color) {
-    val dataState by infoViewModel.uiState.collectAsState()
+fun ContactDataPortrait(dataViewModel: DataViewModel = viewModel()) {
+    val dataState by dataViewModel.uiState.collectAsState()
     val screenTitle = stringResource(id = R.string.contact_data_title)
     val phone = stringResource(id = R.string.phone)
     val email = stringResource(id = R.string.email)
@@ -217,140 +128,189 @@ fun ContactDataPortrait(infoViewModel: DataViewModel = viewModel(), colorTittle:
     val validation by remember {
         mutableStateOf(false)
     }
-    val colorBackground = Color(0xFFFFFFFF)
-    val scrollState = rememberScrollState()
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorBackground)
-            .verticalScroll(scrollState)
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Text(
-            text = screenTitle,
-            fontSize = 28.sp,
-            color = colorTittle,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-        Row(
+        val colorBackground = Color(0xFFFFFFFF)
+        val colorTittle = Color(0xFF000000)
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            InputField(
-                "$phone*",
-                R.drawable.phone,
-                KeyboardType.Number,
-                KeyboardCapitalization.None,
-                dataState.phone,
-                onValueChange = { infoViewModel.setPhone(it) }
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            InputField(
-                "$email*",
-                R.drawable.email,
-                KeyboardType.Email,
-                KeyboardCapitalization.None,
-                dataState.email,
-                onValueChange = { infoViewModel.setEmail(it) }
-            )
-        }
-        Spacer(modifier = Modifier.width(20.dp))
-
-        LocationDropdownPortrait(
-            dataState.country,
-            dataState.city,
-            onChangeCountry = { infoViewModel.setCountry(it) },
-            onChangeCity = { infoViewModel.setCity(it) },
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            InputField(
-                address,
-                R.drawable.address,
-                KeyboardType.Text,
-                KeyboardCapitalization.Sentences,
-                dataState.address,
-                onValueChange = { infoViewModel.setAddress(it) }
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+                .fillMaxSize()
+                .background(colorBackground)
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = stringResource(id = R.string.required_fields),
-                fontSize = 11.sp,
+                text = screenTitle,
+                fontSize = 28.sp,
                 color = colorTittle,
-                modifier = Modifier
-                    .padding(top = 15.dp),
+                modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
             )
-        }
+            PhoneRow(phone, dataState, dataViewModel)
+            EmailRow(email, dataState, dataViewModel)
+            Spacer(modifier = Modifier.width(20.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        )
-        {
-            Spacer(Modifier.weight(1f))
-            val colorBack = Color(0xFF000000)
-            val colorText = Color(0xFF000000)
-            Button(
-                enabled = validation,
-                onClick = {
-                    Log.i(
-                        "DATA", "${screenTitle.uppercase()}\n" +
-                                "---------------------------------------\n" +
-                                "$phone = ${dataState.phone}\n" +
-                                "$email = ${dataState.email}\n" +
-                                "$country = ${dataState.country}\n" +
-                                if (dataState.city.isNotEmpty()) {
-                                    "$city = ${dataState.city}\n"
-                                } else {
-                                    ""
-                                } +
-                                if (dataState.address.isNotEmpty()) {
-                                    "$address = ${dataState.address}\n"
-                                } else {
-                                    ""
-                                }
-                    )
-                },
-                modifier = Modifier.padding(30.dp),
-                contentPadding = PaddingValues(
-                    start = 20.dp,
-                    top = 12.dp,
-                    end = 20.dp,
-                    bottom = 12.dp
-                ),
-                colors = ButtonDefaults.buttonColors(containerColor = colorBack)
-            ) {
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text(
-                    stringResource(id = R.string.save_button),
-                    color = colorText,
-                )
-                Icon(
-                    Icons.Filled.ArrowForward,
-                    contentDescription = "ArrowForward",
-                    tint = colorText
-                )
-            }
+            LocationDropdownPortrait(
+                dataState.country,
+                dataState.city,
+                onChangeCountry = { dataViewModel.setCountry(it) },
+                onChangeCity = { dataViewModel.setCity(it) },
+            )
+
+            AddressRow(address, dataState, dataViewModel)
+
+            RequiredMarkRow(colorTittle)
+
+            SaveButtonRow(validation, screenTitle, phone, dataState, email, country, city, address)
         }
+    }
+}
+
+@Composable
+private fun PhoneAndEmailRow(
+    phone: String, dataState: DataState, dataViewModel: DataViewModel, email: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        InputField("$phone *",
+            R.drawable.phone,
+            KeyboardType.Number,
+            KeyboardCapitalization.None,
+            dataState.phone,
+            onValueChange = { dataViewModel.setPhone(it) })
+        Spacer(modifier = Modifier.width(15.dp))
+        InputField("$email *",
+            R.drawable.email,
+            KeyboardType.Email,
+            KeyboardCapitalization.None,
+            dataState.email,
+            onValueChange = { dataViewModel.setEmail(it) })
+    }
+}
+
+@Composable
+private fun EmailRow(
+    email: String, dataState: DataState, dataViewModel: DataViewModel
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+    ) {
+        InputField("$email*",
+            R.drawable.email,
+            KeyboardType.Email,
+            KeyboardCapitalization.None,
+            dataState.email,
+            onValueChange = { dataViewModel.setEmail(it) })
+    }
+}
+
+@Composable
+private fun PhoneRow(
+    phone: String, dataState: DataState, dataViewModel: DataViewModel
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        InputField("$phone*",
+            R.drawable.phone,
+            KeyboardType.Number,
+            KeyboardCapitalization.None,
+            dataState.phone,
+            onValueChange = { dataViewModel.setPhone(it) })
+    }
+}
+
+@Composable
+private fun AddressRow(
+    address: String, dataState: DataState, dataViewModel: DataViewModel
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        InputField(address,
+            R.drawable.address,
+            KeyboardType.Text,
+            KeyboardCapitalization.Sentences,
+            dataState.address,
+            onValueChange = { dataViewModel.setAddress(it) })
+    }
+}
+
+@Composable
+private fun SaveButtonRow(
+    validation: Boolean,
+    screenTitle: String,
+    phone: String,
+    dataState: DataState,
+    email: String,
+    country: String,
+    city: String,
+    address: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(Modifier.weight(1f))
+        val colorBack = Color(0xFFF7D4E8)
+        val colorText = Color(0xFF000000)
+        Button(
+            enabled = validation, onClick = {
+                Log.i(
+                    "DATA",
+                "${screenTitle.uppercase()}\n"
+                        + "---------------------------------------\n"
+                        + "$phone = ${dataState.phone}\n"
+                        + "$email = ${dataState.email}\n"
+                        + "$country = ${dataState.country}\n"
+                        +
+                    if (dataState.city.isNotEmpty()) {
+                        "$city = ${dataState.city}\n"
+                    } else {
+                        ""
+                    } + if (dataState.address.isNotEmpty()) {
+                        "$address = ${dataState.address}\n"
+                    } else {
+                        ""
+                    }
+                )
+            }, modifier = Modifier.padding(30.dp), contentPadding = PaddingValues(
+                start = 20.dp, top = 12.dp, end = 20.dp, bottom = 12.dp
+            ), colors = ButtonDefaults.buttonColors(containerColor = colorBack)
+        ) {
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            Text(
+                stringResource(id = R.string.save_button),
+                color = colorText,
+            )
+            Icon(
+                Icons.Filled.ArrowForward, contentDescription = "ArrowForward", tint = colorText
+            )
+        }
+    }
+}
+
+@Composable
+private fun RequiredMarkRow(colorTittle: Color) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = stringResource(id = R.string.required_fields),
+            fontSize = 11.sp,
+            color = colorTittle,
+            modifier = Modifier.padding(top = 15.dp),
+            textAlign = TextAlign.Center
+        )
     }
 }
 

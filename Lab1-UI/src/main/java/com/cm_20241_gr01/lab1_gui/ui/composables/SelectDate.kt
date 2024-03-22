@@ -20,8 +20,8 @@ import com.cm_20241_gr01.lab1_gui.R
 import java.util.Date
 
 @Composable
-fun SelectDate(DataViewModel: DataViewModel = viewModel()) {
-    val infoUiState by DataViewModel.uiState.collectAsState()
+fun SelectDate(dataViewModel: DataViewModel = viewModel()) {
+    val infoUiState by dataViewModel.uiState.collectAsState()
 
     val colorIcon = Color(0xFFF7D4E8)
     val mContext = LocalContext.current
@@ -35,11 +35,8 @@ fun SelectDate(DataViewModel: DataViewModel = viewModel()) {
     mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
     mCalendar.time = Date()
 
-    val labelBirthdate: String
-    if (infoUiState.birthdate.isNullOrEmpty()) {
-        labelBirthdate = stringResource(id = R.string.select_button)
-    } else {
-        labelBirthdate = infoUiState.birthdate
+    val labelBirthdate: String = infoUiState.birthdate.ifEmpty {
+        stringResource(id = R.string.select_button)
     }
 
     val mDate = remember { mutableStateOf(value = labelBirthdate) }
@@ -47,7 +44,7 @@ fun SelectDate(DataViewModel: DataViewModel = viewModel()) {
         mContext,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
             mDate.value = "$mDayOfMonth/${mMonth + 1}/$mYear"
-            DataViewModel.setBirthdate(mDate.value)
+            dataViewModel.setBirthdate(mDate.value)
         }, mYear, mMonth, mDay
     )
     OutlinedButton(onClick = {

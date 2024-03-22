@@ -14,9 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
@@ -39,11 +40,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cm_20241_gr01.lab1_gui.DataViewModel
-import com.cm_20241_gr01.lab1_gui.R
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.cm_20241_gr01.lab1_gui.DataViewModel
+import com.cm_20241_gr01.lab1_gui.R
 import com.cm_20241_gr01.lab1_gui.ui.composables.InputField
 import com.cm_20241_gr01.lab1_gui.ui.composables.RadioButtonGender
 import com.cm_20241_gr01.lab1_gui.ui.composables.SelectDateBirthday
@@ -51,13 +52,17 @@ import com.cm_20241_gr01.lab1_gui.ui.composables.SelectStudyGrade
 
 
 @Composable
-fun PersonalDataScreen(onNextButton: (Int) -> Unit) {
+fun PersonalDataScreen(
+    onNextButton: (Int) -> Unit,
+    dataViewModel: DataViewModel = viewModel()
+) {
     when (LocalConfiguration.current.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
             PersonalDataLandscapeLayout(onNextButton)
         }
+
         else -> {
-            personalDataPortraitLayout(onNextButton)
+            PersonalDataPortraitLayout(onNextButton)
         }
     }
 }
@@ -65,30 +70,34 @@ fun PersonalDataScreen(onNextButton: (Int) -> Unit) {
 @Composable
 fun PersonalDataLandscapeLayout(
     onNextButton: (Int) -> Unit,
-    DataViewModel: DataViewModel = viewModel()
+    dataViewModel: DataViewModel = viewModel()
 ) {
-    val infoUiState by DataViewModel.uiState.collectAsState()
+    val infoUiState by dataViewModel.uiState.collectAsState()
     val screenTitle = stringResource(id = R.string.personal_data_title)
     val firstname = stringResource(id = R.string.firstname)
     val lastName = stringResource(id = R.string.lastname)
     val gender = stringResource(id = R.string.gender)
     val birthdate = stringResource(id = R.string.birthdate)
     val scholarship = stringResource(id = R.string.scolarity)
+    val dataState by dataViewModel.uiState.collectAsState()
     var validation by remember {
         mutableStateOf(false)
     }
-    DisposableEffect(infoUiState.firstName, infoUiState.lastName, infoUiState.birthdate) {
+    DisposableEffect(dataState.firstName, dataState.lastName, dataState.birthdate) {
         validation =
-            !infoUiState.firstName.isNullOrEmpty() and !infoUiState.lastName.isNullOrEmpty() and !infoUiState.birthdate.isNullOrEmpty()
+            dataState.firstName.isNotEmpty() and dataState.lastName.isNotEmpty() and dataState.birthdate.isNotEmpty()
         onDispose { }
     }
-    BoxWithConstraints {
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
+    ) {
         val colorBackground = Color(0xFFFFFFFF)
         val colorTittle = Color(0xFF000000)
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(colorBackground)
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 text = stringResource(id = R.string.personal_data_title),
@@ -113,7 +122,7 @@ fun PersonalDataLandscapeLayout(
                     KeyboardType.Text,
                     KeyboardCapitalization.Words,
                     infoUiState.firstName,
-                    onValueChange = {DataViewModel.setFirstName(it) }
+                    onValueChange = { dataViewModel.setFirstName(it) }
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 InputField(
@@ -122,7 +131,7 @@ fun PersonalDataLandscapeLayout(
                     KeyboardType.Text,
                     KeyboardCapitalization.Words,
                     infoUiState.lastName,
-                    onValueChange = { DataViewModel.setLastName(it) }
+                    onValueChange = { dataViewModel.setLastName(it) }
                 )
             }
             Row(
@@ -148,7 +157,7 @@ fun PersonalDataLandscapeLayout(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 60.dp),
+                    .padding(horizontal = 100.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             )
@@ -171,61 +180,92 @@ fun PersonalDataLandscapeLayout(
                     textAlign = TextAlign.Center
                 )
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                val colorBack = Color(0xFF000000)
-                val colorText = Color(0xFF000000)
-                OutlinedButton(
-                    enabled = validation,
-                    onClick = {
-                        onNextButton(2)
-                        Log.i(
-                            "", "${screenTitle.uppercase()}\n" +
-                                    "---------------------------------------\n" +
-                                    "$firstname= ${infoUiState.firstName}\n" +
-                                    "$lastName = ${infoUiState.lastName}\n" +
-                                    if (!infoUiState.gender.isEmpty()) {
-                                        "$gender = ${infoUiState.gender}\n"
-                                    } else {
-                                        ""
-                                    }
-                                    + "$birthdate = ${infoUiState.birthdate}\n" +
-                                    if (!infoUiState.scholarship.isEmpty()) {
-                                        "$scholarship = ${infoUiState.scholarship}\n"
-                                    } else {
-                                        ""
-                                    }
-                        )
-                    },
-                    modifier = Modifier.padding(end = 100.dp, bottom = 20.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = colorBack)
-                ) {
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(
-                        stringResource(R.string.next_button),
-                        color = colorText,
-                    )
-                    Icon(
-                        Icons.Filled.ArrowForward,
-                        contentDescription = "ArrowForward",
-                        tint = colorText
-                    )
-                }
-            }
+            NextButtonRow(
+                validation,
+                onNextButton,
+                screenTitle,
+                firstname,
+                infoUiState,
+                lastName,
+                gender,
+                birthdate,
+                scholarship
+            )
         }
     }
 }
 
 @Composable
-fun personalDataPortraitLayout(
+private fun NextButtonRow(
+    validation: Boolean,
     onNextButton: (Int) -> Unit,
-    DataViewModel: DataViewModel = viewModel()
+    screenTitle: String,
+    firstname: String,
+    infoUiState: DataState,
+    lastName: String,
+    gender: String,
+    birthdate: String,
+    scholarship: String
 ) {
-    val infoUiState by DataViewModel.uiState.collectAsState()
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
+        val colorBack = Color(0xFFF7D4E8)
+        val colorText = Color(0xFF000000)
+        OutlinedButton(
+            enabled = validation,
+            onClick = {
+                onNextButton(2)
+                Log.i(
+                    "DATA", "${screenTitle.uppercase()}\n" +
+                            "---------------------------------------\n" +
+                            "$firstname= ${infoUiState.firstName}\n" +
+                            "$lastName = ${infoUiState.lastName}\n" +
+                            if (infoUiState.gender.isNotEmpty()) {
+                                "$gender = ${infoUiState.gender}\n"
+                            } else {
+                                ""
+                            }
+                            + "$birthdate = ${infoUiState.birthdate}\n" +
+                            if (infoUiState.scholarship.isNotEmpty()) {
+                                "$scholarship = ${infoUiState.scholarship}\n"
+                            } else {
+                                ""
+                            }
+                )
+            },
+            contentPadding = PaddingValues(
+                start = 20.dp,
+                top = 12.dp,
+                end = 20.dp,
+                bottom = 12.dp
+            ),
+            colors = ButtonDefaults.buttonColors(containerColor = colorBack)
+        ) {
+            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+            Text(
+                stringResource(R.string.next_button),
+                color = colorText,
+            )
+            Icon(
+                Icons.Filled.ArrowForward,
+                contentDescription = "ArrowForward",
+                tint = colorText
+            )
+        }
+    }
+}
+
+@Composable
+fun PersonalDataPortraitLayout(
+    onNextButton: (Int) -> Unit,
+    dataViewModel: DataViewModel = viewModel()
+) {
+    val infoUiState by dataViewModel.uiState.collectAsState()
 
     val screenTitle = stringResource(id = R.string.personal_data_title)
     val firstname = stringResource(id = R.string.firstname)
@@ -233,24 +273,28 @@ fun personalDataPortraitLayout(
     val gender = stringResource(id = R.string.gender)
     val birthdate = stringResource(id = R.string.birthdate)
     val scholarship = stringResource(id = R.string.scolarity)
+    val dataState by dataViewModel.uiState.collectAsState()
     var validation by remember {
         mutableStateOf(false)
     }
-    DisposableEffect(infoUiState.firstName, infoUiState.lastName, infoUiState.birthdate) {
+    DisposableEffect(dataState.firstName, dataState.lastName, dataState.birthdate) {
         validation =
-            !infoUiState.firstName.isNullOrEmpty() and !infoUiState.lastName.isNullOrEmpty() and !infoUiState.birthdate.isNullOrEmpty()
+            dataState.firstName.isNotEmpty() and dataState.lastName.isNotEmpty() and dataState.birthdate.isNotEmpty()
         onDispose { }
     }
 
     BoxWithConstraints {
         val colorBackground = Color(0xFFFFFFFF)
         val colorTittle = Color(0xFF000000)
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(colorBackground)
-        ) {
+                .verticalScroll(
+                    rememberScrollState()
+                )
+        )
+        {
             Text(
                 text = stringResource(id = R.string.personal_data_title),
                 fontSize = 28.sp,
@@ -271,7 +315,7 @@ fun personalDataPortraitLayout(
                     KeyboardType.Text,
                     KeyboardCapitalization.Words,
                     infoUiState.firstName,
-                    onValueChange = { DataViewModel.setFirstName(it) }
+                    onValueChange = { dataViewModel.setFirstName(it) }
                 )
             }
 
@@ -286,7 +330,7 @@ fun personalDataPortraitLayout(
                     KeyboardType.Text,
                     KeyboardCapitalization.Words,
                     infoUiState.lastName,
-                    onValueChange = { DataViewModel.setLastName(it) }
+                    onValueChange = { dataViewModel.setLastName(it) }
                 )
             }
 
@@ -310,7 +354,7 @@ fun personalDataPortraitLayout(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 20.dp),
+                    .padding(bottom = 20.dp, end = 20.dp),
                 verticalAlignment = Alignment.CenterVertically
             )
             {
@@ -333,74 +377,31 @@ fun personalDataPortraitLayout(
                     textAlign = TextAlign.Center
                 )
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            NextButtonRow(
+                validation,
+                onNextButton,
+                screenTitle,
+                firstname,
+                infoUiState,
+                lastName,
+                gender,
+                birthdate,
+                scholarship
             )
-            {
-                Spacer(Modifier.weight(1f))
-                val colorBack = Color(0xFF000000)
-                val colorText = Color(0xFF000000)
-
-                Button(
-                    onClick = {
-                        onNextButton(2)
-                        Log.i(
-                            "", "${screenTitle.uppercase()}\n" +
-                                    "---------------------------------------\n" +
-                                    "$firstname = ${infoUiState.firstName}\n" +
-                                    "$lastName = ${infoUiState.lastName}\n" +
-                                    if (!infoUiState.gender.isEmpty()) {
-                                        "$gender = ${infoUiState.gender}\n"
-                                    } else {
-                                        ""
-                                    }
-                                    + "$birthdate = ${infoUiState.birthdate}\n" +
-                                    if (!infoUiState.scholarship.isEmpty()) {
-                                        "$scholarship = ${infoUiState.scholarship}\n"
-                                    } else {
-                                        ""
-                                    }
-                        )
-                    },
-                    modifier = Modifier.padding(30.dp),
-                    contentPadding = PaddingValues(
-                        start = 20.dp,
-                        top = 12.dp,
-                        end = 20.dp,
-                        bottom = 12.dp
-                    ),
-                    colors = ButtonDefaults.buttonColors(containerColor = colorBack),
-                    enabled = validation
-                ) {
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(
-                        stringResource(R.string.next_button),
-                        color = colorText,
-                    )
-                    Icon(
-                        Icons.Filled.ArrowForward,
-                        contentDescription = "ArrowForward",
-                        tint = colorText
-                    )
-                }
-            }
         }
     }
 }
 
 
-
-
 @Preview(
     showSystemUi = true,
-    device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
+    device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp," +
+            "orientation=landscape"
 )
 @Composable
-fun PersonalDataScreenPreview(){
+fun PersonalDataScreenPreview() {
     val navController: NavHostController = rememberNavController()
-    PersonalDataLandscapeLayout(onNextButton = {
+    PersonalDataScreen(onNextButton = {
         navController.navigate("contactData")
     })
 }
