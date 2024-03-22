@@ -12,3 +12,4 @@ data class DataState (
     val country: String = "",
     val city: String = "",
 )
+
