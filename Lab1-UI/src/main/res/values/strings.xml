@@ -1,3 +1,28 @@
 <resources>
-    <string name="app_name">Lab1-GUI</string>
+    <string name="app_name">Labs20232-Gr04</string>
+    <string name="personIcon">Icono de perfil de usuario</string>
+    <string name="personal_data_title">Personal Data</string>
+    <string name="firstname">First name</string>
+    <string name="lastname">Last name</string>
+    <string name="birthdate">Birthdate</string>
+    <string name="phone">Phone number</string>
+    <string name="email">Email</string>
+    <string name="address">Address</string>
+    <string name="gender">Gender</string>
+    <string name="country">Country</string>
+    <string name="state">State</string>
+    <string name="city">City</string>
+    <string name="scolarity">Level of education</string>
+    <string name="scolarity_primary">Primary</string>
+    <string name="scolarity_secundary">Secundary</string>
+    <string name="scolarity_bachelor">Bachelor Degree</string>
+    <string name="scolarity_other">Other</string>
+    <string name="contact_data_title">Contact Data</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="select_button">Select</string>
+    <string name="next_button">Next</string>
+    <string name="save_button">Save</string>
+    <string name="required_fields">The fields marked with * are required</string>
+
 </resources>
