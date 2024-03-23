@@ -5,7 +5,10 @@
       <entry key="Lab1-UI">
         <State />
       </entry>
-      <entry key="app">
+      <entry key="MainActivity">
+        <State />
+      </entry>
+      <entry key="PersonalDataScreenPreview">
         <State />
       </entry>
     </value>
