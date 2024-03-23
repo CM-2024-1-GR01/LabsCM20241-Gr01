@@ -92,7 +92,7 @@ fun PersonalDataLandscapeLayout(
         modifier = Modifier.fillMaxSize()
     ) {
         val colorBackground = Color(0xFFFFFFFF)
-        val colorTittle = Color(0xFF000000)
+        val colorTitle = Color(0xFF000000)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -102,7 +102,7 @@ fun PersonalDataLandscapeLayout(
             Text(
                 text = stringResource(id = R.string.personal_data_title),
                 fontSize = 28.sp,
-                color = colorTittle,
+                color = colorTitle,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 5.dp),
@@ -174,7 +174,7 @@ fun PersonalDataLandscapeLayout(
                 Text(
                     text = stringResource(id = R.string.required_fields),
                     fontSize = 11.sp,
-                    color = colorTittle,
+                    color = colorTitle,
                     modifier = Modifier
                         .padding(top = 15.dp),
                     textAlign = TextAlign.Center
@@ -285,7 +285,7 @@ fun PersonalDataPortraitLayout(
 
     BoxWithConstraints {
         val colorBackground = Color(0xFFFFFFFF)
-        val colorTittle = Color(0xFF000000)
+        val colorTitle = Color(0xFF000000)
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -298,7 +298,7 @@ fun PersonalDataPortraitLayout(
             Text(
                 text = stringResource(id = R.string.personal_data_title),
                 fontSize = 28.sp,
-                color = colorTittle,
+                color = colorTitle,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 15.dp),
@@ -370,7 +370,7 @@ fun PersonalDataPortraitLayout(
                 Text(
                     text = stringResource(id = R.string.required_fields),
                     fontSize = 11.sp,
-                    color = colorTittle,
+                    color = colorTitle,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 15.dp),

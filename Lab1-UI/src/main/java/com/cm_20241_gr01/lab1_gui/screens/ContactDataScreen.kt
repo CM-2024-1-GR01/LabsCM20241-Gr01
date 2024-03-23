@@ -73,8 +73,8 @@ fun ContactDataScreen(viewModel: DataViewModel) {
 fun ContactDataLandscape(dataViewModel: DataViewModel) {
     val dataState by dataViewModel.uiState.collectAsState()
     val screenTitle = stringResource(id = R.string.contact_data_title)
-    val phone = stringResource(id = R.string.phone)
-    val email = stringResource(id = R.string.email)
+    val phone = stringResource(id = R.string.phone) + " *"
+    val email = stringResource(id = R.string.email) + " *"
     val country = stringResource(id = R.string.country)
     val city = stringResource(id = R.string.city)
     val address = stringResource(id = R.string.address)
