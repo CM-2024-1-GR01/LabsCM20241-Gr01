@@ -139,4 +139,6 @@ dependencies {
     implementation(projects.core.domainTesting)
 
     coreLibraryDesugaring(libs.core.jdk.desugaring)
+        // WorkManager dependency
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 }

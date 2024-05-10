@@ -17,16 +17,20 @@
 package com.example.jetcaster.ui.player
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.example.jetcaster.core.data.repository.EpisodeStore
 import com.example.jetcaster.core.player.EpisodePlayer
 import com.example.jetcaster.core.player.EpisodePlayerState
 import com.example.jetcaster.core.player.model.toPlayerEpisode
+import com.example.jetcaster.services.WorkerManagerAudio
 import com.example.jetcaster.ui.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Duration
@@ -74,10 +78,20 @@ class PlayerViewModel @Inject constructor(
 
     fun onPlay() {
         episodePlayer.play()
+        val audioPlay = OneTimeWorkRequest.from(WorkerManagerAudio::class.java)
+        val workManager = WorkManager.getInstance()
+
+        workManager.enqueue(audioPlay)
+        Log.d("Boton", "Clic en play")
     }
 
     fun onPause() {
         episodePlayer.pause()
+        val audioPlay = OneTimeWorkRequest.from(WorkerManagerAudio::class.java)
+        val workManager = WorkManager.getInstance()
+
+        workManager.enqueue(audioPlay)
+
     }
 
     fun onStop() {
